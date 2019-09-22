@@ -22,5 +22,5 @@ variable "server_type" {
 
 variable "server_image" {
   type    = "string"
-  default = "debian-10"
+  default = "ubuntu-18.04"
 }

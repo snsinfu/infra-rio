@@ -1,3 +1,8 @@
+- name: ufw is uninstalled
+  apt:
+    name: ufw
+    state: absent
+
 # netfilter-persistent installs systemd service that manages firewall using
 # plugins. iptables-persistent is one of available plugin choices. It uses
 # iptables-restore command to apply rules.
