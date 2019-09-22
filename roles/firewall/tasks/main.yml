@@ -1,0 +1,24 @@
+# netfilter-persistent installs systemd service that manages firewall using
+# plugins. iptables-persistent is one of available plugin choices. It uses
+# iptables-restore command to apply rules.
+- name: iptables persistence packages are installed
+  apt:
+    name:
+      - netfilter-persistent
+      - iptables-persistent
+    state: present
+
+- name: iptables rules are up
+  template:
+    src: "{{ inventory_hostname }}/iptables.v4rules.j2"
+    dest: /etc/iptables/rules.v4
+    mode: 0600
+  vars:
+    PIF: "{{ ansible_default_ipv4.interface }}"
+  notify: restart firewall
+
+- name: firewall is activated
+  service:
+    name: netfilter-persistent
+    state: started
+    enabled: yes

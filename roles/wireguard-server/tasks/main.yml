@@ -1,0 +1,50 @@
+- name: debian unstable repository is enabled
+  apt_repository:
+    repo: deb http://deb.debian.org/debian/ unstable main
+    state: present
+
+- name: debian unstable repository priority is low
+  copy:
+    content: |
+      Package: *
+      Pin: release a=unstable
+      Pin-Priority: 90
+    dest: /etc/apt/preferences.d/limit-unstable
+
+- name: wireguard dkms config is up
+  copy:
+    content: |
+      # This very deep traversal is really necessary.
+      POST_BUILD=../../../../../../root/sign-kmod.sh
+    dest: /etc/dkms/wireguard.conf
+
+# This takes a while to build wireguard kernel module.
+- name: wireguard is installed
+  apt:
+    name: wireguard
+    state: present
+
+- name: wireguard configuration is up
+  template:
+    src: wg-server.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: 0600
+  notify: restart wg-quick
+
+- name: wireguard service port is registered
+  lineinfile:
+    path: /etc/services
+    line: "wg0 {{ wg_server_port }}/udp"
+    regexp: "^wg0 "
+    state: present
+
+- name: wireguard kernel module is loaded
+  modprobe:
+    name: wireguard
+    state: present
+
+- name: wg-quick is activated
+  service:
+    name: wg-quick@wg0
+    state: started
+    enabled: yes
