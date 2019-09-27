@@ -1,3 +1,10 @@
+- name: dkms and linux headers are installed
+  apt:
+    name:
+      - dkms
+      - "linux-headers-{{ ansible_kernel }}"
+    state: present
+
 - name: wireguard repository is enabled
   apt_repository:
     repo: ppa:wireguard/wireguard

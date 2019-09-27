@@ -6,7 +6,6 @@
 
   roles:
     - apt
-    - dkms
     - wireguard-server
     - postgres-server
     - k3s-server

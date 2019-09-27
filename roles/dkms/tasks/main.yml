@@ -1,6 +1,0 @@
-- name: dkms and linux headers are installed
-  apt:
-    name:
-      - dkms
-      - "linux-headers-{{ ansible_kernel }}"
-    state: present
