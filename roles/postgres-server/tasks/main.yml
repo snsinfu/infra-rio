@@ -1,36 +1,49 @@
-- name: Ansible prerequisites are installed
+- name: ansible postgres prerequisites are installed
   apt:
     name:
       - python3-pexpect
       - python3-psycopg2
     state: present
 
-# https://wiki.debian.org/PostgreSql
-- name: Postgres cluster manager is installed
+# Ubuntu package repository only provides a single version of postgresql. So
+# use the postgresql apt repository instead.
+- name: postgres apt signing key is added
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: postgres repository is added
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+    state: present
+    filename: pgdg.list
+
+# APT postgresql installation creates a password-less cluster named main by
+# default. Suppress that behavior.
+- name: postgres cluster manager is installed
   apt:
     name: postgresql-common
     state: present
 
-- name: Postgres createcluster config directory is present
+- name: postgres createcluster config directory is present
   file:
     path: /etc/postgresql-common/createcluster.d
     state: directory
 
-# Debian's postgres installation creates a passwordless cluster named main by
-# default. Suppress that behavior.
-- name: Postgres default cluster creation is suppressed
+- name: postgres default cluster creation is suppressed
   copy:
     content: |
       create_main_cluster = false
     dest: /etc/postgresql-common/createcluster.d/50-suppress_main_cluster.conf
 
-- name: Postgres server is installed
+- name: postgres is installed
   apt:
     name: "postgresql-{{ postgres_version }}"
     state: present
 
-# Create a database cluster.
-- name: Postgres cluster is created
+# Postgres supports multiple server instances or "clusters" that listen on
+# different ports. We only need a single cluster.
+- name: postgres cluster is created
   expect:
     command: >
       pg_createcluster
@@ -49,7 +62,7 @@
 # connect to postgres from the host Ansible is connecting to, so the login_host
 # should be 127.0.0.1. Note: The module does not fail and just emits a warning
 # on failure.
-- name: Postgres cluster is accessible
+- name: postgres cluster is accessible
   postgresql_ping:
     db: postgres
     login_host: 127.0.0.1
