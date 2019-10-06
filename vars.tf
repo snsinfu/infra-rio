@@ -2,6 +2,10 @@ variable "domain_zone" {
   type = "string"
 }
 
+variable "root_password" {
+  type = "string"
+}
+
 variable "admin_user" {
   type = "string"
 }

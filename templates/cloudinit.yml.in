@@ -23,3 +23,11 @@ system_info:
     groups: ssh_users
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
+
+# All passwords are expired by default. It causes apt-get error saying "You are
+# required to change your password immediately (root enforced)". Set non-expired
+# root password here.
+chpasswd:
+  list:
+    - "root:${root_password}"
+  expire: no

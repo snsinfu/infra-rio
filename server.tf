@@ -9,6 +9,7 @@ resource "hcloud_server" "master" {
 data "template_file" "cloudinit" {
   template = file("${path.module}/templates/cloudinit.yml.in")
   vars     = {
+    root_password      = var.root_password
     admin_user         = var.admin_user
     admin_pubkeys_json = jsonencode(var.admin_pubkeys)
   }
