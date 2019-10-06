@@ -8,7 +8,7 @@
   args:
     creates: /usr/local/bin/k3s
   environment:
-    INSTALL_K3S_VERSION: v0.9.0
+    INSTALL_K3S_VERSION: v0.9.1
 
 - name: k3s is started
   service:
