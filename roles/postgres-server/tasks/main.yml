@@ -68,3 +68,10 @@
     login_host: 127.0.0.1
     login_user: postgres
     login_password: "{{ postgres_password }}"
+
+- name: postgres service port is registered
+  lineinfile:
+    path: /etc/services
+    line: "postgres 5432/tcp"
+    regexp: "^postgres "
+    state: present

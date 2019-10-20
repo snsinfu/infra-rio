@@ -18,3 +18,10 @@
     name: k3s
     state: started
     enabled: yes
+
+- name: k3s service port is registered
+  lineinfile:
+    path: /etc/services
+    line: "kubernetes 6443/tcp"
+    regexp: "^kubernetes "
+    state: present
