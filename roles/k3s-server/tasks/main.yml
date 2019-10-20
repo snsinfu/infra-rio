@@ -4,10 +4,12 @@
     state: present
 
 - name: k3s is installed
-  shell: curl -fsSL https://get.k3s.io/ | sh
+  shell: curl -fsSL https://get.k3s.io/ | sh -
   args:
     creates: /usr/local/bin/k3s
   environment:
+    # - tls-san option allows remote kubectl via wireguard
+    INSTALL_K3S_EXEC: "server --tls-san {{ k3s_address }}"
     INSTALL_K3S_VERSION: v0.9.1
 
 - name: k3s is started
