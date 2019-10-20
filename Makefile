@@ -6,6 +6,7 @@ ARTIFACTS = \
   _provision.ok \
   _vars.json \
   _known_hosts \
+  _output \
   _ssh_config \
   inventory/_terraform_hosts
 

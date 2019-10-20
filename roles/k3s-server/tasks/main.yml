@@ -19,9 +19,25 @@
     state: started
     enabled: yes
 
-- name: k3s service port is registered
+- name: k3s service ports are registered
   lineinfile:
     path: /etc/services
-    line: "kubernetes 6443/tcp"
-    regexp: "^kubernetes "
+    line: "{{ item.name }} {{ item.port }}"
+    regexp: "^{{ item.name }} "
     state: present
+  with_items:
+    - { name: kubernetes, port: 6443/tcp }
+    - { name: flannel,    port: 8472/udp }
+
+- name: k3s remote config is generated
+  shell: |
+    sed                                \
+      's/127.0.0.1/{{ k3s_address }}/' \
+      /etc/rancher/k3s/k3s.yaml        \
+    > k3s-remote.yaml
+
+- name: k3s remote config is downloaded
+  fetch:
+    src: k3s-remote.yaml
+    dest: _output/k3s.yaml
+    flat: yes

@@ -3,7 +3,7 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    k3s_address: "{{ wg_subnet | ipaddr(1) }}"
+    k3s_address: "{{ wg_subnet | ipaddr(1) | ipaddr('address') }}"
 
   roles:
     - apt
