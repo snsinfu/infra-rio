@@ -9,7 +9,8 @@
     creates: /usr/local/bin/k3s
   environment:
     # - tls-san option allows remote kubectl via wireguard
-    INSTALL_K3S_EXEC: "server --tls-san {{ k3s_address }}"
+    # - disable traefik as it conflicts with Rio's service loadbalancer
+    INSTALL_K3S_EXEC: "server --tls-san {{ k3s_address }} --no-deploy traefik"
     INSTALL_K3S_VERSION: v0.9.1
 
 - name: k3s is started
