@@ -6,7 +6,7 @@
 
 # Use LOGDROP instead of DROP for logging dropped packets.
 -N LOGDROP
--A LOGDROP -j LOG --log-prefix "iptables: [DROP] " -m limit --limit 5/min
+-A LOGDROP -j LOG --log-prefix "iptables: [DROP] " -m limit --limit 1/min
 -A LOGDROP -j DROP
 
 -A INPUT -j ACCEPT -i lo
