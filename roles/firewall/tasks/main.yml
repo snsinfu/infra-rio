@@ -1,11 +1,9 @@
-- name: ufw is uninstalled
-  apt:
+- name: ufw is disabled
+  service:
     name: ufw
-    state: absent
+    state: stopped
+    enabled: no
 
-# netfilter-persistent installs systemd service that manages firewall using
-# plugins. iptables-persistent is one of available plugin choices. It uses
-# iptables-restore command to apply rules.
 - name: iptables persistence packages are installed
   apt:
     name:
@@ -15,11 +13,14 @@
 
 - name: iptables rules are up
   template:
-    src: "{{ inventory_hostname }}/iptables.v4rules.j2"
-    dest: /etc/iptables/rules.v4
+    src: "{{ inventory_hostname }}/iptables-{{ item }}.j2"
+    dest: "/etc/iptables/{{ item }}"
     mode: 0600
   vars:
     PIF: "{{ ansible_default_ipv4.interface }}"
+  with_items:
+    - rules.v4
+    - rules.v6
   notify: restart firewall
 
 - name: firewall is activated
