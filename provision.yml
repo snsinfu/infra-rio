@@ -11,4 +11,5 @@
     - wireguard-server
     - postgres-server
     - k3s-server
+    - mackerel
     - firewall
