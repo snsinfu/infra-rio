@@ -11,7 +11,7 @@
     # - tls-san option allows remote kubectl via wireguard
     # - disable traefik as it conflicts with Rio's service loadbalancer
     INSTALL_K3S_EXEC: "server --tls-san {{ k3s_address }} --no-deploy traefik"
-    INSTALL_K3S_VERSION: v0.9.1
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
 
 - name: k3s is started
   service:
