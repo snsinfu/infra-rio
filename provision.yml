@@ -8,6 +8,7 @@
 
   roles:
     - apt
+    - admin-user
     - wireguard-server
     - postgres-server
     - k3s-server

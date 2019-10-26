@@ -1,0 +1,5 @@
+- name: admin ssh pubkeys are inserted
+  authorized_key:
+    user: "{{ terraform.admin_user }}"
+    key: "{{ terraform.admin_pubkeys | join('\n') }}"
+    state: present
