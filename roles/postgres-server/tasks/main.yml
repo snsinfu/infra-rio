@@ -69,6 +69,12 @@
     login_user: postgres
     login_password: "{{ postgres_password }}"
 
+- name: postgres is activated
+  service:
+    name: "postgresql@{{ postgres_version }}-{{ postgres_cluster }}"
+    state: started
+    enabled: yes
+
 - name: postgres service port is registered
   lineinfile:
     path: /etc/services
