@@ -1,0 +1,30 @@
+- hosts: rio
+  become: no
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: database owners are present
+      postgresql_user:
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        login_host: 127.0.0.1
+        login_password: "{{ postgres_password }}"
+      with_items: "{{ postgres_databases }}"
+
+    - name: databases are present
+      postgresql_db:
+        name: "{{ item.name }}"
+        owner: "{{ item.name }}"
+        login_host: 127.0.0.1
+        login_password: "{{ postgres_password }}"
+      with_items: "{{ postgres_databases }}"
+
+    - name: databases are actually accessible
+      postgresql_ping:
+        db: "{{ item.name }}"
+        login_host: 127.0.0.1
+        login_user: "{{ item.name }}"
+        login_password: "{{ item.password }}"
+      with_items: "{{ postgres_databases }}"

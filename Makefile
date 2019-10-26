@@ -4,6 +4,7 @@ ARTIFACTS = \
   _init.ok \
   _server.ok \
   _provision.ok \
+  _database.ok \
   _vars.json \
   _known_hosts \
   _output \
@@ -32,6 +33,10 @@ _server.ok: _init.ok _vars.json
 
 _provision.ok: _server.ok inventory/_terraform_hosts provision.yml
 	ansible-playbook provision.yml
+	@touch $@
+
+_database.ok: _provision.ok database.yml
+	ansible-playbook database.yml
 	@touch $@
 
 inventory/_terraform_hosts: _server.ok
