@@ -5,6 +5,11 @@
       - python3-psycopg2
     state: present
 
+- name: postgres facts are defined
+  set_fact:
+    postgres_configdir: "/etc/postgresql/{{ postgres_version }}/{{ postgres_cluster }}"
+    postgres_datadir: "/var/lib/postgresql/{{ postgres_version }}/{{ postgres_cluster }}"
+
 # Ubuntu package repository only provides a single version of postgresql. So
 # use the postgresql apt repository instead.
 - name: postgres apt signing key is added
@@ -49,31 +54,45 @@
       pg_createcluster
         --locale C.UTF-8
         --port 5432
-        --start
         {{ postgres_version }}
         {{ postgres_cluster }}
         --
         --pwprompt
-    creates: "/var/lib/postgresql/{{ postgres_version }}/{{ postgres_cluster }}/PG_VERSION"
+    creates: "{{ postgres_datadir }}/PG_VERSION"
     responses:
       "(password|again):": "{{ postgres_password }}"
 
-# Check accessibility to the maintenance db (named "postgres"). This tries to
-# connect to postgres from the host Ansible is connecting to, so the login_host
-# should be 127.0.0.1. Note: The module does not fail and just emits a warning
-# on failure.
-- name: postgres cluster is accessible
-  postgresql_ping:
-    db: postgres
-    login_host: 127.0.0.1
-    login_user: postgres
-    login_password: "{{ postgres_password }}"
+- name: postgres connection config is up
+  copy:
+    content: |
+      listen_addresses = '*'
+    dest: "{{ postgres_configdir }}/conf.d/connection.conf"
+  notify: restart postgres
+
+- name: postgres tuning config is up
+  template:
+    src: postgres-tuning.conf.j2
+    dest: "{{ postgres_configdir }}/conf.d/tuning.conf"
+  notify: restart postgres
+
+- name: postgres auth config is up
+  template:
+    src: postgres-hba.conf.j2
+    dest: "{{ postgres_configdir }}/pg_hba.conf"
+  notify: restart postgres
 
 - name: postgres is activated
   service:
     name: "postgresql@{{ postgres_version }}-{{ postgres_cluster }}"
     state: started
     enabled: yes
+
+# Check accessibility to the maintenance db (named "postgres"). The module does
+# not fail and just emits a warning on failure.
+- name: postgres cluster is accessible
+  postgresql_ping:
+    db: postgres
+    login_password: "{{ postgres_password }}"
 
 - name: postgres service port is registered
   lineinfile:
