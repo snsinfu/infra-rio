@@ -1,6 +1,3 @@
-terraform.tfstate
-terraform.tfstate.backup
 _*
 .*
-
 !.gitignore
