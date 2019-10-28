@@ -11,6 +11,11 @@ ARTIFACTS = \
   _ssh_config \
   inventory/_terraform_hosts
 
+TF_INIT_OPTIONS = \
+  -backend-config="bucket=$${TF_GCS_BUCKET}" \
+  -backend-config="prefix=$${TF_GCS_PREFIX}"
+
+
 .PHONY: all clean destroy
 
 all: _provision.ok _ssh_config
@@ -24,7 +29,7 @@ destroy:
 	@rm -f _server.ok
 
 _init.ok:
-	terraform init
+	terraform init $(TF_INIT_OPTIONS)
 	@touch $@
 
 _server.ok: _init.ok _vars.json
