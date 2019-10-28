@@ -35,7 +35,8 @@
       's/127.0.0.1/{{ k3s_address }}/' \
       /etc/rancher/k3s/k3s.yaml        \
     > k3s-remote.yaml
-  warn: no
+  args:
+    warn: no
   changed_when: none
 
 - name: k3s remote config is downloaded
