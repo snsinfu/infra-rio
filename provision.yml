@@ -3,14 +3,14 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    k3s_address: "{{ wg_subnet | ipaddr(1) | ipaddr('address') }}"
+    k3s_address: "{{ wg_bastion_subnet | ipaddr(1) | ipaddr('address') }}"
     k3s_version: v0.9.1
     walg_version: v0.2.13
 
   roles:
     - apt
     - admin-user
-    - wireguard-server
+    - wireguard-bastion
     - postgres-server
     - postgres-backup
     - k3s-server

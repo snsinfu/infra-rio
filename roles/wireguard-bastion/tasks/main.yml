@@ -16,9 +16,9 @@
     name: wireguard
     state: present
 
-- name: wireguard configuration is up
+- name: wireguard bastion configuration is up
   template:
-    src: wg-server.conf.j2
+    src: wg-bastion.conf.j2
     dest: /etc/wireguard/wg0.conf
     mode: 0600
   notify: restart wg-quick
@@ -26,7 +26,7 @@
 - name: wireguard service port is registered
   lineinfile:
     path: /etc/services
-    line: "wg0 {{ wg_server_port }}/udp"
+    line: "wg0 {{ wg_bastion_port }}/udp"
     regexp: "^wg0 "
     state: present
 
