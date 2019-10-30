@@ -10,6 +10,7 @@
   roles:
     - apt
     - admin-user
+    - local-address
     - wireguard-bastion
     - postgres-server
     - postgres-backup

@@ -1,0 +1,3 @@
+iface lo inet loopback
+    up   ip addr add {{ unique_local_address }}/32 dev lo
+    down ip addr del {{ unique_local_address }}/32 dev lo

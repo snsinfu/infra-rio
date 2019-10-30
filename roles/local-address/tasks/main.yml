@@ -1,0 +1,11 @@
+# Add unique local address to the loopback interface.
+#
+# Parameters:
+#   unique_local_address - IPv4 address to add.
+
+# Ubuntu 18.04 uses the traditional ifup/ifdown to configure the loopback
+# interface. https://askubuntu.com/q/1161255
+- name: local address config is up
+  template:
+    src: ula.cfg.j2
+    dest: /etc/network/interfaces.d/ula.cfg

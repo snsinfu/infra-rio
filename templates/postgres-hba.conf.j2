@@ -2,3 +2,4 @@
 local   all             postgres                                md5
 host    all             postgres        {{ wg_bastion_subnet }} md5
 local   sameuser        all                                     md5
+host    sameuser        all             10.42.0.0/16            md5
